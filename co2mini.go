@@ -106,7 +106,6 @@ func NewCO2Mini() (CO2Mini, error) {
 				cm.data.Temperature = math.RoundToEven(convertFtoC(float64(value))*10.0) / 10.0
 				cm.mu.RUnlock()
 			default:
-				log.Println(encreptedData)
 			}
 		}
 	}()

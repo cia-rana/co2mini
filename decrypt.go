@@ -2,21 +2,15 @@ package co2mini
 
 func decrypt(encryptedData []byte, key []byte) []byte {
 	// phase1
-	phase1 := []byte{
-		encryptedData[2],
-		encryptedData[4],
-		encryptedData[0],
-		encryptedData[7],
-		encryptedData[1],
-		encryptedData[6],
-		encryptedData[5],
-		encryptedData[3],
+	phase1 := make([]byte, 8)
+	for i, v := range []int{2, 4, 0, 7, 1, 6, 5, 3} {
+		phase1[i] = encryptedData[v]
 	}
 
 	// phase2
 	phase2 := make([]byte, 8)
-	for i, p := range phase1 {
-		phase2[i] = p ^ key[i]
+	for i := range phase1 {
+		phase2[i] = phase1[i] ^ key[i]
 	}
 
 	// phase3
@@ -27,9 +21,8 @@ func decrypt(encryptedData []byte, key []byte) []byte {
 
 	// phase4
 	phase4 := make([]byte, 8)
-	c := []uint16{0x84, 0x47, 0x56, 0xd6, 0x07, 0x93, 0x93, 0x56} // reverse "Htemp99e" in each half-bytes
-	for i, p := range phase3 {
-		phase4[i] = byte((0x100 + uint16(p) - c[i]) & 0xff)
+	for i, v := range []uint16{0x84, 0x47, 0x56, 0xd6, 0x07, 0x93, 0x93, 0x56} { // reverse "Htemp99e" in each half-bytes
+		phase4[i] = byte((0x100 + uint16(phase3[i]) - v) & 0xff)
 	}
 
 	return phase4
